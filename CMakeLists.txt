@@ -30,7 +30,11 @@ else()
    set(FMT_LIB "${CMAKE_BINARY_DIR}/fmt/lib/libfmt.a")
 endif()
 
-add_executable(eigenblock src/eigenblock.cc)
+add_executable(eigenblock 
+    src/main.cc 
+    src/eigenblock.cc
+)
+
 add_dependencies(eigenblock Fmt)
 target_include_directories(eigenblock PUBLIC
     ${FMT_INCLUDE_DIR}
