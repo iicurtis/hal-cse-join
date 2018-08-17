@@ -20,13 +20,48 @@ to perform matrix operations, such as matrix multiplications and matrix inverse,
 on the data structure you designed. Provide a technical write-up of your solution 
 along with associated code implementing your solution.
 
-## Ideas
+# Usage
 
-Use standard vectors internally. Use z-order curve otherwise.
+```
+./diagblock n d
+```
+where n is the array size, and d is the size of the diagonal.
 
-This is known as a BLOCK MATRIX.
+## Example
 
-## Roadmap
+```
+./diagblock 16 8
+Initializing...    n: 16  d: 16
+
+Generating initial blocks.
+Done. Matrix size: 65536.
+
+===EIGEN SPARSE===
+  Building Eigen Sparse Matrix... Done.
+  Matmul:        0 milliseconds
+
+===EIGEN DENSE====
+  Building Eigen Dense Matrix... Done.
+  Matmul:        0 milliseconds
+
+===GSL DENSE======
+  Building GSL Dense Matrix... Done.
+  Matmul:        1 milliseconds
+
+===DiagBlock ======
+  Building DiagBlock Dense Matrix... Done.
+  Matmul:        0 milliseconds
+```
+
+# Compiling
+
+Requires:
+- CMake 3.5+
+- GSL
+- Eigen
+
+
+# Roadmap
 
 - [x] Get idea working with Eigen
 - [ ] Implement tests
