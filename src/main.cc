@@ -14,10 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-#define LOGGING true
+#define LOGGING false
 
 #include<iostream>
 #include<chrono>
+#include "args.hxx"
 #include "diagblock.h"
 #include "eigenblock.h"
 #include "gslblock.h"
@@ -34,10 +35,43 @@ auto timing = [](auto && F, auto && ... params)
       std::chrono::high_resolution_clock::now() - start).count();
 };
 
-int main() {
+int main(int argc, char **argv) {
   fmt::print("Initializing...    ");
-  const size_t n = 8;
-  const size_t d = 8;
+  args::ArgumentParser parser("This is a test program.", "This goes after the options.");
+  args::HelpFlag help(parser, "help", "Display this help menu", {'h', "help"});
+  args::CompletionFlag completion(parser, {"complete"});
+  args::Positional<size_t> input_n(parser, "n", "The array size n");
+  args::Positional<size_t> input_d(parser, "d", "The size of the diagonal d");
+  try
+  {
+    parser.ParseCLI(argc, argv);
+  }
+  catch (args::Completion e)
+  {
+    std::cout << e.what();
+    return 0;
+  }
+  catch (args::Help)
+  {
+    std::cout << parser;
+    return 0;
+  }
+  catch (args::ParseError e)
+  {
+    std::cerr << e.what() << std::endl;
+    std::cerr << parser;
+    return 1;
+  }
+  catch (args::ValidationError e)
+  {
+    std::cerr << e.what() << std::endl;
+    std::cerr << parser;
+    return 1;
+  }
+  size_t n = 1024;
+  size_t d = 16;
+  if (input_n) n = args::get(input_n);
+  if (input_d) d = args::get(input_d);
   fmt::print("n: {}  d: {}\n\n", n, d);
   fmt::print("Generating initial blocks.\n");
   DiagMat D1 = generatediags(n, d);

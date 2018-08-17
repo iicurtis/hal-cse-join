@@ -33,3 +33,7 @@
 
 build
 compile_commands.json
+
+README.*
+!README.md
+!README.tex

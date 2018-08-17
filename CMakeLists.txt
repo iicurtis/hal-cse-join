@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(eigenblock VERSION 0.0.1)
+project(diagblock VERSION 0.0.1)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
@@ -49,19 +49,19 @@ endif()
 # set(BLAZE_INCLUDE_DIR "${CMAKE_BINARY_DIR}/blaze/include")
 # set(BLAZE_LIB "${CMAKE_BINARY_DIR}/blaze/lib/")
 
-add_executable(eigenblock 
+add_executable(diagblock
     src/main.cc 
     src/eigenblock.cc
     src/gslblock.cc
     src/diagblock.cc
 )
 
-add_dependencies(eigenblock Fmt)
-target_include_directories(eigenblock PUBLIC
+add_dependencies(diagblock Fmt)
+target_include_directories(diagblock PUBLIC
     ${FMT_INCLUDE_DIR}
     ${BLAS_INCLUDE_DIR}
 )
-target_link_libraries(eigenblock 
+target_link_libraries(diagblock 
     Eigen3::Eigen
     ${FMT_LIB}
     blas
