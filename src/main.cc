@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-#define LOGGING false
+#define LOGGING true
 
 #include<iostream>
 #include<chrono>
@@ -36,8 +36,8 @@ auto timing = [](auto && F, auto && ... params)
 
 int main() {
   fmt::print("Initializing...    ");
-  const size_t n = 128;
-  const size_t d = 16;
+  const size_t n = 8;
+  const size_t d = 8;
   fmt::print("n: {}  d: {}\n\n", n, d);
   fmt::print("Generating initial blocks.\n");
   DiagMat D1 = generatediags(n, d);

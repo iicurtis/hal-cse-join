@@ -21,35 +21,42 @@
 
 
 DiagBlock::DiagBlock(size_t n, size_t d) : n(n), d(d) {
-  for (int i{0}; i<n*n; ++i) {
-    std::vector<double> vs(d, 0);
+  for (size_t i{0}; i<d; ++i) {
+    std::vector<double> vs(n*n, 0);
     m.emplace_back(vs);
   }
 }
 
-DiagBlock::DiagBlock(std::vector<std::vector<double>> D) : m(D) {
-  n = std::sqrt(m.size());
-  d = m[0].size();
+DiagBlock::DiagBlock(std::vector<std::vector<double>> D) {
+  n = std::sqrt(D.size());
+  d = D[0].size();
+  for (size_t i{0}; i<d; ++i) {
+    std::vector<double> vs;
+    for (size_t j{0}; j<n*n; ++j) {
+      vs.emplace_back(D[j][i]);
+    }
+    m.emplace_back(vs);
+  }
 }
 
 void DiagBlock::set(size_t r, size_t c, double v) {
-  m[(r/d)+c/d*n][r%d] = v;
+  m[r%d][(r/d)+c/d*n] = v;
 }
 
 void DiagBlock::setD(size_t i, size_t j, size_t x, double v) {
-  m[i+j*n][x] = v;
+  m[x][i+j*n] = v;
 }
 
 double DiagBlock::get(size_t r, size_t c) const {
   if (r % d == c % d) {
-    return m[(r/d)+c/d*n][r%d];
+    return m[r%d][(r/d)+c/d*n];
   }
   else
     return 0.0;
 }
 
 double DiagBlock::getD(size_t i, size_t j, size_t x) const {
-  return m[i+j*n][x];
+  return m[x][i+j*n];
 }
 
 std::vector<double> DiagBlock::getblock(size_t i, size_t j) {
