@@ -1,0 +1,407 @@
+\RequirePackage[l2tabu, orthodox]{nag}
+\documentclass[letterpaper, 10pt, twoside]{article}
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\usepackage[english]{babel}  			% English language hyphenation
+\usepackage{microtype} 					% Better typography and spacing
+\usepackage{amsmath,amsfonts,amsthm} 	% Math packages for equations
+\usepackage{graphicx}					% Required for adding images
+\graphicspath{{figures/}}
+\usepackage[svgnames]{xcolor} 			% Enabling colors by their 'svgnames'
+\usepackage[shortlabels]{enumitem}		% Modify list labels (a. b. c.)
+\setlist{noitemsep}
+\usepackage{adjustbox}
+\usepackage{kantlipsum}
+
+%----------------------------------------------------------------------------------------
+%	MARGINS AND SPACING
+%----------------------------------------------------------------------------------------
+
+\usepackage{geometry} 		% Required for adjusting page dimensions
+
+\geometry{
+	top=1cm, 				% Top margin
+	bottom=1.5cm, 			% Bottom margin
+	left=2cm, 				% Left margin
+	right=2cm, 				% Right margin
+	includehead, 			% Include space for a header
+	includefoot, 			% Include space for a footer
+		%showframe, 		% Uncomment to show how the type block is set on the page
+}
+
+\setlength{\columnsep}{7mm} % Column separation width
+
+\usepackage{titlesec}
+\setcounter{secnumdepth}{0}
+\titleformat{\subsection}[runin]
+{\normalfont\normalsize\bfseries}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}[runin]
+{\normalfont\normalsize\bfseries}{\thesubsubsection}{1em}{}
+
+%----------------------------------------------------------------------------------------
+%	FONTS
+%----------------------------------------------------------------------------------------
+
+\usepackage[T1]{fontenc} 		% Output font encoding for international characters
+%\usepackage[utf8]{inputenc} 	% Required for inputting international characters
+\usepackage{luaotfload}
+
+\usepackage{lmodern} 			% Use the lmodern font
+
+%----------------------------------------------------------------------------------------
+%	HEADERS AND FOOTERS
+%----------------------------------------------------------------------------------------
+
+\usepackage{fancyhdr} % Needed to define custom headers/footers
+\pagestyle{fancy} % Enables the custom headers/footers
+
+\renewcommand{\headrulewidth}{0.4pt} % No header rule
+\renewcommand{\footrulewidth}{0.4pt} % Thin footer rule
+
+%\renewcommand{\sectionmark}[1]{\markboth{#1}{}} % Removes the section number from the header when \leftmark is used
+
+%\nouppercase\leftmark % Add this to one of the lines below if you want a section title in the header/footer
+
+% Headers
+\fancyhead[RO,LE]{\usefont{OT1}{phv}{c}{n} ARTICLE} % Left header
+%\fancyhead[LO,RE]{\usefont{OT1}{phv}{c}{n} DoI} % Left header
+\fancyfoot[RO,LE]{\footnotesize\thepage}
+\fancyfoot[LO,RE]{\footnotesize University of Idaho \textcopyright \ \the\year}
+\cfoot{}
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\newcommand{\authorstyle}[1]{{\large\usefont{OT1}{phv}{c}{n}\color{Black}#1}} % Authors style (Helvetica)
+
+%\newcommand{\institution}[1]{{\footnotesize\usefont{OT1}{phv}{m}{sl}\color{Black}#1}} % Institutions style (Helvetica)
+
+\usepackage{titling} % Allows custom title configuration
+
+%\newcommand{\HorRule}{\color{Black}\rule{\linewidth}{1pt}} % Defines the gold horizontal rule around the title
+
+\pretitle{
+	\vspace{-30pt} % Move the entire title section up
+	\noindent
+	\fontsize{24}{28}\usefont{OT1}{phv}{m}{n}\selectfont % Helvetica
+	%\color{Black} % Text colour for the title and author(s)
+}
+
+\posttitle{\par\vskip 15pt} % Whitespace under the title
+
+\newcommand*\samethanks[1][\value{footnote}]{\footnotemark[#1]}
+
+
+%----------------------------------------------------------------------------------------
+%	ABSTRACT
+%----------------------------------------------------------------------------------------
+
+\usepackage{lettrine} % Package to accentuate the first letter of the text (lettrine)
+\usepackage{fix-cm}	% Fixes the height of the lettrine
+
+\newcommand{\initial}[1]{ % Defines the command and style for the lettrine
+	\lettrine[lines=3,findent=4pt,nindent=0pt]{% Lettrine takes up 3 lines, the text to the right of it is indented 4pt and further indenting of lines 2+ is stopped
+		{#1}% The letter
+	}{}%
+}
+
+%\usepackage{xstring} % Required for string manipulation
+
+\newcommand{\myabstract}[1]{
+	\StrLeft{#1}{1}[\firstletter] % Capture the first letter of the abstract for the lettrine
+	\initial{\firstletter}\StrGobbleLeft{#1}{1} % Print the abstract with the first letter as a lettrine and the rest in bold
+}
+
+\makeatletter
+\newbox\abstract@box
+\renewenvironment{abstract}
+{\global\setbox\abstract@box=\vbox\bgroup
+	\hsize=\textwidth\linewidth=\textwidth
+	\small
+	\begin{center}%
+		{\bfseries \abstractname\vspace{-.5em}\vspace{\z@}}%
+	\end{center}%
+	\quotation}
+{\endquotation\egroup}
+\expandafter\def\expandafter\@maketitle\expandafter{\@maketitle
+	\ifvoid\abstract@box\else\unvbox\abstract@box\if@twocolumn\vskip1.5em\fi\fi}
+\makeatother
+
+%----------------------------------------------------------------------------------------
+%	BIBLIOGRAPHY
+%----------------------------------------------------------------------------------------
+
+\usepackage[style=chem-acs,backend=biber]{biblatex}
+\addbibresource{ref.bib}					% Filename of bibliography
+
+\usepackage[autostyle=true]{csquotes} 		% Required to generate language-dependent quotes in the bibliography
+
+
+%----------------------------------------------------------------------------------------
+%	SCIENTIFIC FORMATTING
+%----------------------------------------------------------------------------------------
+
+% ---- Use \SI[per-mode=fraction] ----
+\usepackage{siunitx}
+\sisetup{
+	group-four-digits = true,
+	group-separator = {,},
+}
+\DeclareSIUnit{\torr}{torr}
+
+\usepackage{hyperref}	% Cross-references #LaTeX3
+\usepackage{cleveref}	% Makes references... better. (Use cref) #LaTeX3
+
+\usepackage[version=4]{mhchem}		% Chemical formulas with \ce 
+%\usepackage{chemformula}			% Chemical formulas with \ch
+\usepackage{xfrac}		% Use the docs. This one gives great fracs #LaTeX3
+\usepackage{ulem}		% Even underlining.
+\usepackage[super]{nth}	% "2nd","3rd"
+\usepackage{changepage}	% Indent those subsections!
+
+%----------------------------------------------------------------------------------------
+%	GRAPHICS, FIGURES, & TABLES
+%----------------------------------------------------------------------------------------
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{asymptote}
+\pgfplotsset{compat=1.12}
+\usetikzlibrary{automata}
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{decorations.markings}
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+		mark=at position .65 with {\arrow{stealth}}}}]
+\tikzstyle reverse directed=[postaction={decorate,decoration={markings,
+		mark=at position .65 with {\arrowreversed{stealth};}}}]
+
+
+\usepackage[labelfont=bf,labelsep=period,margin=.5cm,font=small]{caption}	% Provides captions for multicol environment workarounds
+\usepackage{ctable}		% Provides scientific tables.
+\usepackage{subcaption}
+\usepackage{xcolor} % Only used to provide color box in 
+\usepackage{listings}
+
+
+%----------------------------------------------------------------------------------------
+%	ARTICLE INFORMATION
+%----------------------------------------------------------------------------------------
+
+\title{DiagBlock: Fast Matrix Multiplication of Special Block Diagonals} % The article title
+
+\author{
+	\authorstyle{Isaac Curtis}\thanks{University of Idaho} \and \authorstyle{Vishnu Boddeti}\thanks{Michigan State University}
+}
+
+% Example of a one line author/institution relationship
+%\author{\newauthor{John Marston} \newinstitution{Universidad Nacional Autónoma de México, Mexico City, Mexico}}
+
+\date{} % Add a date here if you would like one to appear underneath the title block, use \today for the current date, leave empty for no date
+
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+	%\maketitle % Print the title
+	%----------------------------------------------------------------------------------------
+	%	ABSTRACT
+	%----------------------------------------------------------------------------------------
+	\begin{abstract}
+		A small library for ultra fast matrix multiplication of special diagonal block
+		matrices.
+	\end{abstract}
+	\maketitle
+	
+	\clearpage
+	\pagebreak
+	
+	% 8-12 pages
+	% 40 - 60 references
+	% 6 - 20 figures (6 large figures, with 2-3 graphs/images in each)
+	
+	%----------------------------------------------------------------------------------------
+	%	ARTICLE CONTENTS
+	%----------------------------------------------------------------------------------------
+	\section{Problem Statement}
+	Consider a matrix $\mathbf{A}$ of size $\mathbb{R}^{nd\times nd}$, where each 
+	non-overlapping $d \times d$ block of the matrix, $\mathbf{D}_{ij}$, is a 
+	diagonal matrix. So the matrix consists of $n^2$
+	such blocks. An example of such a matrix is shown below:
+	
+	\[
+	\begin{bmatrix}
+		\mathbf{D}_{11} & \mathbf{D}_{12} & \mathbf{D}_{13} & \cdots & \mathbf{D}_{1n} \\
+		\mathbf{D}_{21} & \mathbf{D}_{22} & \mathbf{D}_{23} & \cdots & \mathbf{D}_{2n} \\
+		\cdots & \cdots & \cdots & \cdots & \cdots \\
+		\mathbf{D}_{n1} & \mathbf{D}_{n2} & \mathbf{D}_{n3} & \cdots & \mathbf{D}_{nn}
+	\end{bmatrix} 
+	\]
+	
+	Construct an efficient data structure to represent such matrices and device algorithms 
+	to perform matrix operations, such as matrix multiplications and matrix inverse, 
+	on the data structure you designed. Provide a technical write-up of your solution 
+	along with associated code implementing your solution.
+	
+	\section{Introduction}
+	Matrix operations and storage are often the performance bottleneck of many scientific applications. Even with the widespread availability of online clusters such as Google Cloud Computing and access to high-performance supercomputers such as XSEDE, memory and compute power is finite and can often be expensive. To decrease the run time cost associated with expensive matrix operations, the algorithms can be optimized to handle specific use cases. Optimizing can be done by eliminating redundant calculations or skipping over known quantities.
+	
+	One area where known quantities can be skipped is sparse matrices. In a sparse matrix, most of the values are zero, and only a few valid non-zero entries appear. Sparse matrices have been a widely studied problem space. There are many different efficient methods for storing and operating on sparse matrices. A commonly adopted storage approach is Compressed Column Storage, which stores the row and value of each non-zero element and also the number of non-zero elements in each column. Sparse matrices can efficiently be broken down to drastically reduce memory and compute requirements over standard dense matrices.
+	
+	A diagonal matrix is an specific example of a sparse matrix that is zero everywhere except along the diagonal. Due to their sparsity, they can be represented by a simple vector. Consider a $N\times N$ matrix, which is only populated along its diagonal. As all other values are zero, it only requires a vector of size $N$ to store it. In this paper we look at a block matrix that consists of diagonal sub-matrices. We can use specially tailored memory representations to improve performance and reduce memory footprint. The previous diagonal shows that by allocating only a vector for a diagonal matrix, it requires $N$ memory as opposed to $N^2$. We will show that we can expect a similar speed-up in the case of our special block diagonals.  
+	 
+	\section{Methods}
+	Consider the following block matrix of diagonals with $n=3$ and $d=2$:
+	
+	\[
+	\begin{bmatrix}
+	\mathbf{D}_{11} & \mathbf{D}_{12} & \mathbf{D}_{13}  \\
+	\mathbf{D}_{21} & \mathbf{D}_{22} & \mathbf{D}_{23}  \\
+	\mathbf{D}_{31} & \mathbf{D}_{32} & \mathbf{D}_{33}  \\
+	\end{bmatrix} 
+	=
+	\begin{bmatrix}
+	\begin{bmatrix}
+	A_{11} & 0 \\
+	0 & A_{22} 
+	\end{bmatrix} &
+	\begin{bmatrix}
+	A_{13} & 0 \\
+	0 & A_{24} 
+	\end{bmatrix} &
+	\begin{bmatrix}
+	A_{15} & 0 \\
+	0 & A_{26} 
+	\end{bmatrix} \\
+	
+	\begin{bmatrix}
+	A_{31} & 0 \\
+	0 & A_{42} 
+	\end{bmatrix} &
+	\begin{bmatrix}
+	A_{33} & 0 \\
+	0 & A_{44} 
+	\end{bmatrix} &
+	\begin{bmatrix}
+	A_{35} & 0 \\
+	0 & A_{46} 
+	\end{bmatrix} \\
+	
+	\begin{bmatrix}
+	A_{51} & 0 \\
+	0 & A_{62} 
+	\end{bmatrix} &
+	\begin{bmatrix}
+	A_{53} & 0 \\
+	0 & A_{64} 
+	\end{bmatrix} &
+	\begin{bmatrix}
+	A_{55} & 0 \\
+	0 & A_{66} 
+	\end{bmatrix} \\
+	\end{bmatrix} 
+	=
+	\begin{bmatrix}
+	\begin{bmatrix}
+	D_{11}^1 & 0\\
+	0 & D_{11}^2
+	\end{bmatrix} &
+	\begin{bmatrix}
+	D_{12}^1 & 0 \\
+	0 & D_{12}^2 
+	\end{bmatrix} &
+	\begin{bmatrix}
+	D_{13}^1& 0 \\
+	0 & D_{13} 
+	\end{bmatrix} \\
+	
+	\begin{bmatrix}
+	D_{21}^1& 0 \\
+	0 & D_{21}^2
+	\end{bmatrix} &
+	\begin{bmatrix}
+	D_{22}^1& 0 \\
+	0 & D_{22}^2 
+	\end{bmatrix} &
+	\begin{bmatrix}
+	D_{23}^1& 0 \\
+	0 & D_{23} 
+	\end{bmatrix} \\
+	
+	\begin{bmatrix}
+	D_{31}^1& 0 \\
+	0 & D_{31}^2
+	\end{bmatrix} &
+	\begin{bmatrix}
+	D_{32}^1& 0 \\
+	0 & D_{32}^2 
+	\end{bmatrix} &
+	\begin{bmatrix}
+	D_{33}^1 & 0\\
+	0 & D_{33}^2
+	\end{bmatrix} \\
+	\end{bmatrix} 
+	\]
+	
+	The most obvious method for storage is to simply store the full dense array complete with zeros. This would lead to a storage requirement of $nd\times nd$. 
+	Another method of representing such a matrix would be to store each diagonal block $D_{ij}$ as a vector and then have a matrix of vectors. This would reduce storage space from $n^2d^2$ to $n^2d$. However, lets quickly take a look at matrix multiplication of two such matrices, $E$ and $F$:
+	
+	\begin{align*}
+		C_{11}^1 &= E_{11}^1F_{11}^1 + E_{12}^1F_{21}^1 + E_{13}^1F_{31}^1 \\
+		%C_{12} &= E_{11}^1 0 + 0F_{11}^2 + E_{12}^20 + \cdots= 0 \\
+		C_{11}^2 &= E_{11}^2F_{11}^2 + E_{12}^2F_{21}^2 + E_{13}^2F_{31}^2 \\
+		C_{12}^1 &= E_{11}^1F_{12}^1 + E_{12}^1F_{22}^1 + E_{13}^1F_{32}^1 \\
+		C_{12}^2 &= E_{11}^2F_{12}^2 + E_{12}^2F_{22}^2 + E_{13}^2F_{32}^2 \\
+		\cdots
+	\end{align*}
+	
+	Looking at the results, it appears that there are actually $d$ matrix multiplications of size $n\times n$. There is an $n\times n$ matrix for each index of the diagonal. Since $d=2$ for this case:
+	\[
+	\begin{bmatrix}
+	D_{11}^1 & D_{12}^1 & D_{13}^1  \\
+	D_{21}^1 & D_{22}^1 & D_{23}^1  \\
+	D_{31}^1 & D_{32}^1 & D_{33}^1  \\
+	\end{bmatrix}
+	%
+	\begin{bmatrix}
+	D_{11}^2 & D_{12}^2 & D_{13}^2  \\
+	D_{21}^2 & D_{22}^2 & D_{23}^2  \\
+	D_{31}^2 & D_{32}^2 & D_{33}^2  \\
+	\end{bmatrix}
+	\]
+	
+	In essence, to make this matrix storage efficient for this case, we loop over each diagonal and create a new matrix for each index.
+	
+	\section{Results \& Discussion}
+	
+	Using this scheme showed a dramatic increase for $n=1024$ and $d=16$. A speed-up of 93x was achieved. This is not quite as good as the expected speed up of $d^2=256$, but still very promising. Further fine-tuning the storage may result in greater gains.
+	\begin{lstlisting}[caption=The output of BlockDiag executable.]
+	Initializing...    n: 1024  d: 16
+	
+	Generating initial blocks.
+	Done. Matrix size: 268435456.
+	
+	===EIGEN SPARSE===
+	Building Eigen Sparse Matrix... Done.
+	Matmul:    58894 milliseconds
+	
+	===EIGEN DENSE====
+	Building Eigen Dense Matrix... Done.
+	Matmul:    58040 milliseconds
+	
+	===GSL DENSE======
+	Building GSL Dense Matrix... Done.
+	Matmul:    54634 milliseconds
+	
+	===DiagBlock ======
+	Building DiagBlock Dense Matrix... Done.
+	Matmul:      586 milliseconds
+	\end{lstlisting}
+	
+	\section{Conclusions}
+	
+	An efficient storage mechanism has been developed for the unique case of block matrices of size $n\times n$ with each block consisting of a diagonal of size $d\times d$. It has been shown that performance is improved using this storage over both traditional and sparse storage schemes. Matrix multiplication, which would typically require $\mathcal{O}(n^3d^3)$, has been reduced to a much smaller problem of $\mathcal{O}(n^3d)$. As this is actually $d$ $n\times n$ matrix multiplications, the \texttt{dgemm} method was used from the \texttt{BLAS} library. This should automatically remove many performance blockers, such as memory bandwidth limitations of naive matrix multiplication. Alternatively, a personal implementation could be considered using register blocking, tiling, and the more efficient Strassen algorithm. Later stages should add additional common matrix operations such as inverse, etc.
+	
+	
+\end{document}
