@@ -13,6 +13,14 @@ if(CCACHE_FOUND)
 endif(CCACHE_FOUND)
 
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
+find_package(OpenMP)
+if (OPENMP_FOUND)
+    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+    set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
+endif()
+find_package(BLAS REQUIRED)
+find_package(GSL REQUIRED)
 
 # FMT
 ExternalProject_Add(Fmt
@@ -30,16 +38,32 @@ else()
    set(FMT_LIB "${CMAKE_BINARY_DIR}/fmt/lib/libfmt.a")
 endif()
 
+# Blaze
+# ExternalProject_Add(Blaze
+  # PREFIX blaze
+  # GIT_REPOSITORY https://bitbucket.org/blaze-lib/blaze
+  # CMAKE_CACHE_ARGS  "-DFMT_DOC:BOOL=OFF" "-DFMT_INSTALL:BOOL=ON" "-DFMT_TEST:BOOL=OFF"
+  # CMAKE_ARGS
+	# -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
+# )
+# set(BLAZE_INCLUDE_DIR "${CMAKE_BINARY_DIR}/blaze/include")
+# set(BLAZE_LIB "${CMAKE_BINARY_DIR}/blaze/lib/")
+
 add_executable(eigenblock 
     src/main.cc 
     src/eigenblock.cc
+    src/gslblock.cc
+    src/diagblock.cc
 )
 
 add_dependencies(eigenblock Fmt)
 target_include_directories(eigenblock PUBLIC
     ${FMT_INCLUDE_DIR}
+    ${BLAS_INCLUDE_DIR}
 )
 target_link_libraries(eigenblock 
     Eigen3::Eigen
     ${FMT_LIB}
+    blas
+    gsl
 )

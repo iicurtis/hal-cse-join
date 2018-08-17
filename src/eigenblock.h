@@ -17,16 +17,21 @@
 #ifndef EIGENBLOCK_H_E6WDVXQI
 #define EIGENBLOCK_H_E6WDVXQI
 
+#define EIGEN_USE_BLAS
+#define EIGEN_USE_LAPACKE
+
 #include <Eigen/Sparse>
 #include <Eigen/Dense>
 
 typedef Eigen::SparseMatrix<double> SpMat;
+typedef Eigen::MatrixXd EMat;
 typedef Eigen::Triplet<double> T;
 
 std::vector<std::vector<double>> generatediags(const size_t n, const size_t d);
 SpMat buildsparse(const size_t& n, const size_t& d, std::vector<std::vector<double>>& D);
 Eigen::MatrixXd builddense(const size_t& n, const size_t& d, std::vector<std::vector<double>>& D);
 SpMat eigenspmatmul(SpMat& A, SpMat& B);
+EMat eigendmatmul(EMat& A, EMat& B);
 
 
 
