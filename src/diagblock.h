@@ -18,6 +18,7 @@
 #define DIAGBLOCK_H_NX5AWK2N
 
 #include<vector>
+#include<gsl/gsl_blas.h>
 
 class DiagBlock;
 
@@ -25,10 +26,10 @@ class DiagBlock;
 class DiagBlock {
   private:
     size_t n, d;
-    std::vector<std::vector<double>> m;
 
   // constructors
   public:
+    std::vector<gsl_matrix*> m;
     DiagBlock(size_t n, size_t d);
     DiagBlock(std::vector<std::vector<double>> D);
 
@@ -38,7 +39,7 @@ class DiagBlock {
     void setD(size_t i, size_t j, size_t x, double v);
     double get(size_t r, size_t c) const; // Get by traditional
     double getD(size_t i, size_t j, size_t x) const ; // Get by Diag block
-    std::vector<double> getblock(size_t i, size_t j); // Get by Diag block
+    // std::vector<double> getblock(size_t i, size_t j); // Get by Diag block
 
     // operations
     DiagBlock mul(DiagBlock &other);

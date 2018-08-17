@@ -21,8 +21,13 @@
 
 
 DiagBlock::DiagBlock(size_t n, size_t d) : n(n), d(d) {
-  for (size_t i{0}; i<d; ++i) {
-    std::vector<double> vs(n*n, 0);
+  for (size_t x{0}; x<d; ++x) {
+    gsl_matrix *vs = gsl_matrix_alloc(n, n);
+    for (int i{0}; i<n; ++i) {
+      for (int j{0}; j<n; ++j) {
+        gsl_matrix_set(vs, i, j, 0);
+      }
+    }
     m.emplace_back(vs);
   }
 }
@@ -30,51 +35,41 @@ DiagBlock::DiagBlock(size_t n, size_t d) : n(n), d(d) {
 DiagBlock::DiagBlock(std::vector<std::vector<double>> D) {
   n = std::sqrt(D.size());
   d = D[0].size();
-  for (size_t i{0}; i<d; ++i) {
-    std::vector<double> vs;
-    for (size_t j{0}; j<n*n; ++j) {
-      vs.emplace_back(D[j][i]);
+  for (size_t x{0}; x<d; ++x) {
+    gsl_matrix* vs = gsl_matrix_alloc(n, n);
+    for (size_t i{0}; i<n; ++i) {
+      for (size_t j{0}; j<n; ++j) {
+        gsl_matrix_set(vs, i, j, D[i+j*n][x]);
+      }
     }
     m.emplace_back(vs);
   }
 }
 
 void DiagBlock::set(size_t r, size_t c, double v) {
-  m[r%d][(r/d)+c/d*n] = v;
+  gsl_matrix_set(m[r%d], (r/d), c/d, v);
 }
 
 void DiagBlock::setD(size_t i, size_t j, size_t x, double v) {
-  m[x][i+j*n] = v;
+  gsl_matrix_set(m[x], i, j, v);
 }
 
 double DiagBlock::get(size_t r, size_t c) const {
   if (r % d == c % d) {
-    return m[r%d][(r/d)+c/d*n];
+    return gsl_matrix_get(m[r%d], r/d, c/d);
   }
   else
     return 0.0;
 }
 
 double DiagBlock::getD(size_t i, size_t j, size_t x) const {
-  return m[x][i+j*n];
-}
-
-std::vector<double> DiagBlock::getblock(size_t i, size_t j) {
-  return m[i+j*n];
+  return gsl_matrix_get(m[x], i, j);
 }
 
 DiagBlock DiagBlock::mul(DiagBlock& other) {
   DiagBlock out(n, d);
   for (size_t x{0}; x<d; ++x) {
-    for (size_t i{0}; i<n; ++i) {
-      for (size_t j{0}; j<n; ++j) {
-        double sum = 0;
-        for (size_t p{0}; p<n; ++p) {
-          sum += getD(i, p, x)*other.getD(p, j, x);
-        }
-        out.setD(i, j, x, sum);
-      }
-    }
+    gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, m[x], other.m[x], 0.0, out.m[x]);
   }
   return out;
 }
